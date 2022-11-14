@@ -79,7 +79,6 @@ for i in range(0,len(obsTypeStr_SPC)):
 # SC(k,l,m)
 for i in range(0,len(obsTypeStr_HSC)):
 	gr = f_HSC.Get("graph_{:s}ALICE".format(obsTypeStr_HSC[i]));
-	gr.Print()
 	x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 	for j in range(0,len(x)):
 		df_new = df_new.append({'ObsType': "HSC",'Observables': plabel_HSC[i], 'Centrality': x[j], 'Correlation': y[j]}, ignore_index=True) # yuck
@@ -99,9 +98,10 @@ for i in range(0,len(obsTypeStr_HSC)):
 
 colors = {"SPC":'red', "HSC":'blue'}
 markers = {"SPC": 's', "HSC": 'o'}
-g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation", hue='ObsType', sizes=(20, 400))	
+g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation", hue='ObsType', sizes=(20, 400))
+h,l = g.get_legend_handles_labels();
 print(df_new)
-plt.legend(bbox_to_anchor=(0.85, 1), loc='upper left', borderaxespad=0)
+plt.legend(h[1:3], l[1:3], bbox_to_anchor=(0.85, 1), loc='upper left', borderaxespad=0)
 # Set x-axis label
 plt.xlabel(xtitle[0])
 # Set y-axis label
