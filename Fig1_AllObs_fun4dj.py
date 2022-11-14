@@ -101,7 +101,7 @@ colors = {'SPC':'red', 'HSC':'blue'}
 grouped = df_new.groupby('ObsType')	
 for key, group in grouped:
     	#group.plot(ax=ax, kind='scatter', x='population', y='Area', label=key, color=colors[key])
-	g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation",hue='ObsType',c=df_new['ObsType'].map(colors), legend=True, sizes=(20, 400))
+	g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation",hue="ObsType",style="ObsType", legend='auto', sizes=(20, 400))
 	
 print(df_new)
 plt.legend(plabel_SPC, loc='upper left',fontsize='x-small',title_fontsize='4')
