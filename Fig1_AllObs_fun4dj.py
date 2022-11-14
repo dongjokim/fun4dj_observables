@@ -97,20 +97,16 @@ for i in range(0,len(obsTypeStr_HSC)):
 # 		arrays = RemovePoints(scpubd[s],np.array([6,7]));
 # 		print(arrays[0:3])
 
-colors = {'SPC':'red', 'HSC':'blue'}
-grouped = df_new.groupby('ObsType')	
-for key, group in grouped:
-    	#group.plot(ax=ax, kind='scatter', x='population', y='Area', label=key, color=colors[key])
-	g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation",hue="ObsType",style="ObsType", legend='auto', sizes=(20, 400))
-	
+colors = {"SPC":'red', "HSC":'blue'}
+markers = {"SPC": 's', "HSC": 'o'}
+g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation", hue='ObsType', sizes=(20, 400))	
 print(df_new)
-plt.legend(plabel_SPC, loc='upper left',fontsize='x-small',title_fontsize='4')
-#plt.legend(plabel_HSC, loc='upper right',fontsize='x-small',title_fontsize='4')
+plt.legend(bbox_to_anchor=(0.85, 1), loc='upper left', borderaxespad=0)
 # Set x-axis label
 plt.xlabel(xtitle[0])
 # Set y-axis label
 plt.ylabel(ytitle[0])
-g.set(xlim=(-1,60),ylim=(-0.1,1))
+g.set(xlim=(-1,85),ylim=(-0.1,1))
 # show the graph
 plt.show()
 
