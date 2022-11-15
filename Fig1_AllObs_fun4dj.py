@@ -72,7 +72,7 @@ for i in range(0,len(obsTypeStr_SPC)):
 	gr = f_SPC.Get("{:s}{:s}".format(obsTypeStr_SPC[i],"_Stat"));
 	x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 	for j in range(0,len(x)):
-		df_new = df_new.append({'ObsType': "SPC",'Observables': plabel_SPC[i], 'Centrality': x[j], 'Correlation': y[j]}, ignore_index=True) # yuck
+		df_new = df_new.append({'ObsType': "$\\langle\\cos\\left(a_{1} n_1 \\Psi_{n_1}+\\cdots+ a_{k} n_k \\Psi_{n_k}\\right) \\rangle_{GE}$",'Observables': plabel_SPC[i], 'Centrality': x[j], 'Correlation': y[j]}, ignore_index=True) # yuck
 	df[obsTypeStr_SPC[i]] = y.tolist()
 	#g = sns.scatterplot(data=df, x="Centrality", y=obsTypeStr_SPC[i], size=obsTypeStr_SPC[i], legend=False, sizes=(20, 400))
 
@@ -81,33 +81,46 @@ for i in range(0,len(obsTypeStr_HSC)):
 	gr = f_HSC.Get("graph_{:s}ALICE".format(obsTypeStr_HSC[i]));
 	x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 	for j in range(0,len(x)):
-		df_new = df_new.append({'ObsType': "HSC",'Observables': plabel_HSC[i], 'Centrality': x[j], 'Correlation': y[j]}, ignore_index=True) # yuck
+		df_new = df_new.append({'ObsType': "SC$(k,l,m)=\\left<v_k^2v_l^2v_m^2\\right>_c$",'Observables': plabel_HSC[i], 'Centrality': x[j], 'Correlation': y[j]}, ignore_index=True) # yuck
 #	df[obsTypeStr_HSC[i]] = y.tolist()
 #	sns.scatterplot(data=df, x="Centrality", y=obsTypeStr_HSC[i], size=obsTypeStr_HSC[i], legend=False, sizes=(20, 400))
 
-# SC(k,l)
-# for index,s in enumerate(list(scpubd)):
-# 	obs = s[5:8];
-# 	print(obs)
-# 	label = "SC({},{})".format(*obs[0:2]);
-# 	print(label)
-# 	if obs[2] == 'N':
-# 		label = "N"+label;
-# 		arrays = RemovePoints(scpubd[s],np.array([6,7]));
-# 		print(arrays[0:3])
+#SC(k,l)
+for index,s in enumerate(list(scpubd)):
+	obs = s[5:8];
+	print(obs)
+	label = "SC({},{})".format(*obs[0:2]);
+	print(label)
+	if obs[2] == 'N':
+		label = "N"+label;
+		#arrays = RemovePoints(scpubd[s],np.array([6,7]));
+		print(scpubd[s][0],scpubd[s][1])
+		for j in range(0,len(scpubd[s][0])):
+			df_new = df_new.append({'ObsType': "SC$(n,m)=\\left<v_n^2v_m^2\\right>_c$",'Observables': label, 'Centrality': scpubd[s][0][j], 'Correlation': scpubd[s][1][j]}, ignore_index=True) # yuck
+			
+# colors = {"SPC":'red', "HSC":'blue'}
+# markers = {"SPC": 's', "HSC": 'o'}
+# color_labels = df_new['Observables'].unique()
+# print(color_labels)
+# # List of colors in the color palettes
+# rgb_values = sns.color_palette("Set2", 11)
 
-colors = {"SPC":'red', "HSC":'blue'}
-markers = {"SPC": 's', "HSC": 'o'}
-g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation", hue='ObsType', sizes=(20, 400))
+# # Map continents to the colors
+# color_map = dict(zip(color_labels, rgb_values))
+#c=df_new['Observables'].map(color_map),
+g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation", 
+	hue='ObsType', sizes=(20, 400))
 h,l = g.get_legend_handles_labels();
 print(df_new)
-plt.legend(h[1:3], l[1:3], bbox_to_anchor=(0.85, 1), loc='upper left', borderaxespad=0)
+plt.legend(h[1:4], l[1:4], bbox_to_anchor=(0., 1), loc='upper left', borderaxespad=0)
 # Set x-axis label
-plt.xlabel(xtitle[0])
+plt.xlabel(xtitle[0],fontsize=15)
 # Set y-axis label
-plt.ylabel(ytitle[0])
-g.set(xlim=(-1,85),ylim=(-0.1,1))
+plt.ylabel(ytitle[0],fontsize=15)
+g.set(xlim=(-1,60),ylim=(-0.25,1.1))
+
 # show the graph
+plt.text(0.85,0.75,toptitle,fontsize=10);
 plt.show()
 
 
