@@ -9,6 +9,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import plotly.express as px
+pd.options.plotting.backend = "plotly"
+
 import sys
 sys.path.append("JPyPlotRatio");
 
@@ -72,18 +75,15 @@ for i in range(0,len(obsTypeStr_SPC)):
 	gr = f_SPC.Get("{:s}{:s}".format(obsTypeStr_SPC[i],"_Stat"));
 	x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 	for j in range(0,len(x)):
-		df_new = df_new.append({'ObsType': "$\\langle\\cos\\left(a_{1} n_1 \\Psi_{n_1}+\\cdots+ a_{k} n_k \\Psi_{n_k}\\right) \\rangle_{GE}$",'Observables': plabel_SPC[i], 'Centrality': x[j], 'Correlation': y[j],"stat_err":yerr[j]}, ignore_index=True) # yuck
-	df[obsTypeStr_SPC[i]] = y.tolist()
-	#g = sns.scatterplot(data=df, x="Centrality", y=obsTypeStr_SPC[i], size=obsTypeStr_SPC[i], legend=False, sizes=(20, 400))
+		df_new = df_new.append({'ObsType': "SPC",'Observables': plabel_SPC[i], 'Centrality': x[j], 'Correlation': y[j],"stat_err":yerr[j]}, ignore_index=True) # yuck
+
 
 # SC(k,l,m)
 for i in range(0,len(obsTypeStr_HSC)):
 	gr = f_HSC.Get("graph_{:s}ALICE".format(obsTypeStr_HSC[i]));
 	x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 	for j in range(0,len(x)):
-		df_new = df_new.append({'ObsType': "SC$(k,l,m)=\\left<v_k^2v_l^2v_m^2\\right>_c$",'Observables': plabel_HSC[i], 'Centrality': x[j], 'Correlation': y[j],"stat_err":yerr[j]}, ignore_index=True) # yuck
-#	df[obsTypeStr_HSC[i]] = y.tolist()
-#	sns.scatterplot(data=df, x="Centrality", y=obsTypeStr_HSC[i], size=obsTypeStr_HSC[i], legend=False, sizes=(20, 400))
+		df_new = df_new.append({'ObsType': "HSC",'Observables': plabel_HSC[i], 'Centrality': x[j], 'Correlation': y[j],"stat_err":yerr[j]}, ignore_index=True) # yuck
 
 #SC(k,l)
 for index,s in enumerate(list(scpubd)):
@@ -96,35 +96,19 @@ for index,s in enumerate(list(scpubd)):
 		#arrays = RemovePoints(scpubd[s],np.array([6,7]));
 		print(scpubd[s][0],scpubd[s][1])
 		for j in range(0,len(scpubd[s][0])):
-			df_new = df_new.append({'ObsType': "SC$(n,m)=\\left<v_n^2v_m^2\\right>_c$",'Observables': label, 'Centrality': scpubd[s][0][j], 'Correlation': scpubd[s][1][j],"stat_err":scpubd[s][2][j]}, ignore_index=True) # yuck
+			df_new = df_new.append({'ObsType': "NSC",'Observables': label, 'Centrality': scpubd[s][0][j], 'Correlation': np.absolute(scpubd[s][1][j]),"stat_err":scpubd[s][2][j]}, ignore_index=True) # yuck
 			
-# colors = {"SPC":'red', "HSC":'blue'}
-mymarkers = {"SPC": 's', "HSC": 'o', "NSC":'*'}
-# color_labels = df_new['Observables'].unique()
-# print(color_labels)
-# # List of colors in the color palettes
-# rgb_values = sns.color_palette("Set2", 11)
 
-# # Map continents to the colors
-# color_map = dict(zip(color_labels, rgb_values))
-#c=df_new['Observables'].map(color_map),
-g = sns.scatterplot(data=df_new, x="Centrality", y="Correlation", size="Correlation", 
-	hue='ObsType', sizes=(20, 400))
-h,l = g.get_legend_handles_labels();
-print(l)
+#mymarkers = {"SPC": 's', "HSC": 'o', "NSC":'*'}
 print(df_new)
-plt.legend(h[1:4], l[1:4], bbox_to_anchor=(0., 1), loc='upper left', borderaxespad=0)
-# Set x-axis label
-plt.xlabel(xtitle[0],fontsize=15)
-# Set y-axis label
-plt.ylabel(ytitle[0],fontsize=15)
-g.set(xlim=(-1,60),ylim=(-0.25,1.1))
 
-# show the graph
-plt.text(0.85,0.75,toptitle,fontsize=10);
-plt.title('Summary of Run1 Correlators')
-plt.savefig("figs/allobs_fun4dj.pdf")
+plt = px.scatter(df_new, x="Centrality", y="Observables", 
+				color="ObsType", hover_data=['ObsType'],
+				 #size="Correlation", # does't work
+                 size_max=100)
 plt.show()
 
-
-
+#plt.text(0.85,0.75,toptitle,fontsize=10);
+#plt.title('Summary of Run1 Correlators')
+#plt.savefig("figs/Fig2_allobs_fun4dj.pdf")
+#plt.show()
