@@ -67,7 +67,7 @@ gr = f_SPC.Get("{:s}{:s}".format(obsTypeStr_SPC[0],"_Stat"));
 x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 df['Centrality'] = x.tolist()
 
-df_cols = ['ObsType','Observables', 'Centrality' , 'Correlation',"stat_err"]
+df_cols = ['ObsType','Observables', 'Centrality' , 'Correlation',"stat_err","year"]
 df_new = pd.DataFrame(columns=df_cols)
 
 #SPC
@@ -75,7 +75,8 @@ for i in range(0,len(obsTypeStr_SPC)):
 	gr = f_SPC.Get("{:s}{:s}".format(obsTypeStr_SPC[i],"_Stat"));
 	x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 	for j in range(0,len(x)):
-		df_new = df_new.append({'ObsType': "$\\langle\\cos\\left(a_{1} n_1 \\Psi_{n_1}+\\cdots+ a_{k} n_k \\Psi_{n_k}\\right) \\rangle_{GE}$",'Observables': plabel_SPC[i], 'Centrality': x[j], 'Correlation': np.absolute(y[j]),"stat_err":yerr[j]}, ignore_index=True) # yuck
+		df_new = df_new.append({'ObsType': "$\\langle\\cos\\left(a_{1} n_1 \\Psi_{n_1}+\\cdots+ a_{k} n_k \\Psi_{n_k}\\right) \\rangle_{GE}$",
+			'Observables': plabel_SPC[i], 'Centrality': x[j], 'Correlation': np.absolute(y[j]),"stat_err":yerr[j],"year":2022}, ignore_index=True) # yuck
 
 
 # SC(k,l,m)
@@ -83,7 +84,8 @@ for i in range(0,len(obsTypeStr_HSC)):
 	gr = f_HSC.Get("graph_{:s}ALICE".format(obsTypeStr_HSC[i]));
 	x,y,_,yerr = JPyPlotRatio.TGraphErrorsToNumpy(gr);
 	for j in range(0,len(x)):
-		df_new = df_new.append({'ObsType': "$SC(k,l,m)=\\left<v_k^2v_l^2v_m^2\\right>_c$",'Observables': plabel_HSC[i], 'Centrality': x[j], 'Correlation': np.absolute(y[j]),"stat_err":yerr[j]}, ignore_index=True) # yuck
+		df_new = df_new.append({'ObsType': "$SC(k,l,m)=\\left<v_k^2v_l^2v_m^2\\right>_c$",
+		'Observables': plabel_HSC[i], 'Centrality': x[j], 'Correlation': np.absolute(y[j]),"stat_err":yerr[j],"year":2021}, ignore_index=True) # yuck
 
 #SC(k,l)
 for index,s in enumerate(list(scpubd)):
@@ -96,23 +98,29 @@ for index,s in enumerate(list(scpubd)):
 		#arrays = RemovePoints(scpubd[s],np.array([6,7]));
 		print(scpubd[s][0],scpubd[s][1])
 		for j in range(0,len(scpubd[s][0])):
-			df_new = df_new.append({'ObsType': "$SC(n,m)=\\left<v_n^2v_m^2\\right>_c$",'Observables': label, 'Centrality': scpubd[s][0][j], 'Correlation': np.absolute(scpubd[s][1][j]),"stat_err":scpubd[s][2][j]}, ignore_index=True) # yuck
+			df_new = df_new.append({'ObsType': "$SC(n,m)=\\left<v_n^2v_m^2\\right>_c$",
+			'Observables': label, 'Centrality': scpubd[s][0][j], 'Correlation': np.absolute(scpubd[s][1][j]),"stat_err":scpubd[s][2][j],"year":2016}, ignore_index=True) # yuck
 			
 
 #mymarkers = {"SPC": 's', "HSC": 'o', "NSC":'*'}
 print(df_new)
 
 plt = px.scatter(df_new, x="Centrality", y="Observables", 
-				color="ObsType", hover_data=['ObsType'],
-				 size="Correlation", # does't work
+				 color="ObsType", hover_data=['ObsType'],
+				 size="Correlation", 
                  size_max=100)
 
 plt.update_layout(legend=dict(
     yanchor="top",
     y=0.99,
     xanchor="left",
-    x=0.8
-))
+    x=0.8),
+    xaxis_title="Centrality Percentile",
+    yaxis_title="",
+    font=dict(
+       size=16
+    )
+)
 
 plt.show()
 
